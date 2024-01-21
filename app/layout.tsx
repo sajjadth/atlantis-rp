@@ -1,4 +1,4 @@
-import "./globals.css";
+import "./globals.sass";
 import theme from "@/theme";
 import { Metadata } from "next";
 import Loading from "./loading";
