@@ -1,20 +1,18 @@
 "use client";
 
 import styles from "./page.module.sass";
-import Container from "@mui/material/Container";
-import { Card, Typography, Stack, Button, Icon, TextField } from "@mui/material";
+import { Container, Card, Typography, Stack, Button, Icon, TextField } from "@mui/material";
 import { useState } from "react";
 
 export default function Home() {
   const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
   return (
-    <Container fixed>
+    <>
       {/* Main vertical stack layout */}
-      <Stack
+      <Container
         sx={{ minHeight: "90svh" }}
-        alignItems="center"
-        justifyContent="space-evenly"
-        direction="column"
+        className="flex flex-col items-center justify-evenly"
+        component="main"
       >
         {/* First nested stack for header content */}
         <Stack alignItems="center" justifyContent="center" direction="column">
@@ -188,7 +186,7 @@ export default function Home() {
             </ul>
           </Card>
         </Stack>
-      </Stack>
-    </Container>
+      </Container>
+    </>
   );
 }
