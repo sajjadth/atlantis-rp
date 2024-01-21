@@ -1,6 +1,6 @@
 "use client";
 
-import styles from "./page.module.css";
+import styles from "./page.module.sass";
 import Container from "@mui/material/Container";
 import { Card, Typography, Stack, Button, Icon, TextField } from "@mui/material";
 import { useState } from "react";

@@ -1,0 +1,67 @@
+.card
+  width: 350px !important
+  min-width: 300px !important
+  height: 500px
+
+  direction: rtl
+
+  background: rgba(0, 0, 0, 0.25) !important
+  backdrop-filter: blur(5px) !important
+  -webkit-backdrop-filter: blur(5px) !important
+
+  position: relative !important
+  border: none !important
+  flex-grow: 1 !important
+
+  &::before
+    content: ""
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    border-radius: inherit
+    border: 1px solid transparent
+    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)
+    -webkit-mask-composite: destination-out
+    mask-composite: exclude
+
+  &Bronze::before
+    background: linear-gradient(250deg, #6a3805ba, #ffffff2e) border-box
+
+  &Silver::before
+    background: linear-gradient(250deg, #d7d7d7ba, #ffffff2e) border-box
+
+  &Gold::before
+    background: linear-gradient(250deg, #c9b037ba, #ffffff2e) border-box
+
+.list
+  list-style: none
+
+  & li
+    position: relative
+    padding-right: 8px
+    padding-bottom: 16px
+
+  & li::before
+    content: ""
+    width: 24px
+    height: 24px
+
+    border-radius: 100%
+    background-color: linear-gradient(145deg, #232323, #1e1e1e)
+    box-shadow: 2px 2px 5px #0d0d0d, -2px -2px 5px #353535
+
+    position: absolute
+    transform: translateX(32px)
+    z-index: 1
+
+  & li::before
+    content: ""
+    background: url("/images/check.svg") center no-repeat
+    background-size: contain
+
+.input div input
+  font-size: 2rem !important
+  font-weight: bold
+  text-align: center
