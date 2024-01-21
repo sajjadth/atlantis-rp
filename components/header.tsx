@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   return (
-    <Container maxWidth="xl" className="w-screen">
+    <Container maxWidth="xl">
       <header className="py-4 flex flex-row items-center justify-between">
         {/* Social media icons section */}
         <div className="h-fit flex flex-row align-center justify-center min-w-48">

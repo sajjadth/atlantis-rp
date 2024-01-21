@@ -8,10 +8,10 @@ import { useState } from "react";
 export default function Home() {
   const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
   return (
-    <Container className="h-svh" fixed>
+    <Container fixed>
       {/* Main vertical stack layout */}
       <Stack
-        className="h-full"
+        sx={{ minHeight: "90svh" }}
         alignItems="center"
         justifyContent="space-evenly"
         direction="column"
