@@ -38,7 +38,7 @@ export default function Home() {
           {/* Gold Plan Card */}
           <Card
             variant="outlined"
-            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between ${styles.card} ${styles.cardGold}`}
+            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between components-background ${styles.card} ${styles.cardGold}`}
           >
             {/* Gold Plan details */}
             <div className="mb-4 h-28">
@@ -92,7 +92,7 @@ export default function Home() {
           {/* Silver Plan Card */}
           <Card
             variant="outlined"
-            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between ${styles.card} ${styles.cardSilver}`}
+            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between components-background ${styles.card} ${styles.cardSilver}`}
           >
             {/* Silver Plan details */}
             <div className="mb-4 h-28">
@@ -141,7 +141,7 @@ export default function Home() {
           {/* Bronze Plan Card */}
           <Card
             variant="outlined"
-            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between ${styles.card} ${styles.cardBronze}`}
+            className={`rounded-2xl px-6  py-5 flex flex-col items-start justify-between components-background ${styles.card} ${styles.cardBronze}`}
           >
             {/* Bronze Plan details */}
             <div className="mb-4 h-28">

@@ -12,12 +12,18 @@ body
   max-width: 100vw
   overflow-x: hidden
 
-body
-  background-color: #000000
-  background-image: repeating-radial-gradient( circle at 0 0, transparent 0, #000000 24px ), repeating-linear-gradient( #08080855, #080808 )
+.main-background
+  background-color: #000000 !important
+  background-image: repeating-radial-gradient( circle at 0 0, transparent 0, #000000 30px ), repeating-linear-gradient( #48bdcf00, #48bdcf2b ) !important
+
 a
   color: inherit
   text-decoration: none
+
+.components-background
+  background: rgba( 0, 0, 0, 0.25 ) !important
+  backdrop-filter: blur( 10px ) !important
+  -webkit-backdrop-filter: blur( 10px ) !important
 
 @media (prefers-color-scheme: dark)
   html

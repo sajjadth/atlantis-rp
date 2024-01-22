@@ -5,6 +5,7 @@ import Loading from "./loading";
 import { Suspense } from "react";
 import { Box } from "@mui/material";
 import Header from "@/components/header";
+import Footer from "@/components/footer";
 import { Vazirmatn } from "next/font/google";
 import { ThemeProvider } from "@mui/material/styles";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
@@ -29,9 +30,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body id="__next" className={vazirmatn.className}>
         <ThemeProvider theme={theme}>
           <AppRouterCacheProvider>
-            <Box className="flex flex-col h-screen items-center justify-start">
+            <Box className="flex flex-col items-center justify-start main-background">
               <Header />
               <Suspense fallback={<Loading />}>{children}</Suspense>
+              <Footer />
             </Box>
           </AppRouterCacheProvider>
         </ThemeProvider>

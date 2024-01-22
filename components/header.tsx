@@ -21,7 +21,7 @@ export default function Header() {
   };
 
   return (
-    <Container component="header" className="py-4 flex flex-row items-center justify-between">
+    <Container component="header" className={`py-4 flex flex-row items-center justify-between rounded-b-2xl components-background`}>
       {/* Social media icons section */}
       <div className="h-fit flex flex-row align-center justify-center min-w-48">
         <Link href="https://www.instagram.com/atlantisrp.ir/" target="_blank">
