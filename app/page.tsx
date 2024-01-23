@@ -20,8 +20,8 @@ export default function Home() {
           {/* Header title */}
           <Typography className="max-w-2xl w-full text-center dir-rtl" variant="h3" gutterBottom>
             پلن
-            <strong className="text-[#48bdcf] font-black"> آتلانتیس رول پلی </strong>
-            را انتخاب کنید که مناسب شما است.
+            <strong className="text-[#48bdcf] font-black"> آتلانتیس </strong>
+            رول پلی را انتخاب کنید که مناسب شما است.
           </Typography>
           {/* Subtitle */}
           <Typography variant="body1" className="text-neutral-300">
