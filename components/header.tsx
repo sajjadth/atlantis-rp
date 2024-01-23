@@ -4,10 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./header.module.sass";
-import { Container, IconButton, ToggleButtonGroup, ToggleButton, Button } from "@mui/material";
+import { Container, IconButton, ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const [stickyHeader, setStickyHeader] = useState(false);
   const pathname = usePathname();
 
   // State to keep track of the active page
@@ -20,8 +21,26 @@ export default function Header() {
     if (newPage !== null) setPageStat(newPage);
   };
 
+  useEffect(() => {
+    document.addEventListener("scroll", () => {
+      var header = document.getElementById("header");
+
+      if (header) {
+        var sticky = header.offsetTop;
+
+        if (window.pageYOffset > sticky) header.classList.add("header-sticky");
+        else header.classList.remove("header-sticky");
+      }
+    });
+  });
+
   return (
-    <Container component="header" className={`py-4 flex flex-row items-center justify-between rounded-b-2xl components-background`}>
+    <Container
+      component="header"
+      sx={{ height: "10svh" }}
+      className={`py-6 flex flex-row items-center justify-between rounded-b-2xl components-background`}
+      id="header"
+    >
       {/* Social media icons section */}
       <div className="h-fit flex flex-row align-center justify-center min-w-48">
         <Link href="https://www.instagram.com/atlantisrp.ir/" target="_blank">
@@ -71,7 +90,7 @@ export default function Header() {
       </div>
 
       {/* Atlantis RP logo section */}
-      <Link href="/">
+      <Link href="/" className="flex flex-column items-center justify-center">
         <Image
           className={styles.headerImg}
           src="/images/atlantis-rp-logo.png"

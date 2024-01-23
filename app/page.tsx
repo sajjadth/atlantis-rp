@@ -13,6 +13,7 @@ export default function Home() {
         sx={{ minHeight: "90svh" }}
         className="flex flex-col items-center justify-evenly"
         component="main"
+        id="main"
       >
         {/* First nested stack for header content */}
         <Stack alignItems="center" justifyContent="center" direction="column">
