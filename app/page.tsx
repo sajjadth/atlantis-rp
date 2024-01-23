@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.sass";
-import { Container, Card, Typography, Stack, Button, Icon, TextField } from "@mui/material";
+import { Container, Card, Typography, Stack, Button, Icon, TextField, Alert } from "@mui/material";
 import { useState } from "react";
 
 export default function Home() {
@@ -187,6 +187,9 @@ export default function Home() {
             </ul>
           </Card>
         </Stack>
+        <Alert severity="warning" dir="rtl" className={`rounded-2xl ${styles.alert}`}>
+          در نظر داشته باشید که بعد از پرداخت به هیچ وجه مبلغ اشتراک شما بازگشت داده نمی شود !
+        </Alert>
       </Container>
     </>
   );
