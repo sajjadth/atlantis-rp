@@ -12,19 +12,21 @@ export default function Footer() {
   return (
     // Container for the entire footer section
     <Container
+      fixed
       component="footer"
-      className={`py-6 rounded-t-2xl min-h-80 h-80 flex flex-col items-center justify-center components-background pt-10 px-10`}
+      className={`py-6 rounded-t-2xl min-h-80 lg:h-80 h-fit flex flex-col items-center justify-center components-background lg:pt-10 lg:px-10`}
     >
       {/* Stack for organizing different sections of the footer */}
       <Stack
         className="h-5/6 w-full dir-rtl"
         direction="row"
-        alignItems="center"
+        alignItems="start"
         justifyContent="space-between"
-        gap={8}
+        gap={4}
+        flexWrap="wrap"
       >
         {/* About Us Section */}
-        <div className="w-3/6 h-full flex flex-col items-start justify-start">
+        <div className="lg:w-fit lg:max-w-80 sm:w-3/6 w-full h-fit flex flex-col items-start justify-start">
           <Typography variant="body1" className={`${styles.footerTitle} mb-4`}>
             درباره ما
           </Typography>
@@ -36,7 +38,7 @@ export default function Footer() {
         </div>
 
         {/* Quick Links Section */}
-        <div className="w-1/6 h-full flex flex-col items-start justify-start">
+        <div className="lg:w-fit sm:w-2/6 w-fit h-fit flex flex-col items-start justify-start">
           <Typography variant="body1" className={`${styles.footerTitle} mb-4`}>
             دسترسی سریع
           </Typography>
@@ -51,7 +53,7 @@ export default function Footer() {
         </div>
 
         {/* Social Media and Other Section */}
-        <div className="w-1/6 h-full flex flex-col items-start justify-start">
+        <div className="lg:w-fit sm:w-2/6 w-fit h-fit flex flex-col items-start justify-start">
           <Typography variant="body1" className={`${styles.footerTitle} mb-4`}>
             دیگر
           </Typography>
@@ -112,7 +114,7 @@ export default function Footer() {
         </div>
 
         {/* Trust Seals Section */}
-        <div className="w-1/6 h-full flex flex-col items-start justify-start">
+        <div className="lg:w-fit sm:w-2/6 w-fit h-fit flex flex-col items-start justify-start">
           <Typography variant="body1" className={`${styles.footerTitle} mb-4`}>
             نمادها
           </Typography>
