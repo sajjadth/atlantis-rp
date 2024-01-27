@@ -113,11 +113,13 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Trust Seals Section */}
+        {/* Trust Seals Section  (Replace with correct code in production) */}
         <div className="lg:w-fit sm:w-2/6 w-fit h-fit flex flex-col items-start justify-start">
           <Typography variant="body1" className={`${styles.footerTitle} mb-4`}>
             نمادها
           </Typography>
+          {/* Placeholder for Enamad seal */}
+          {/* Replace with correct Enamad code */}
           <Link
             referrerPolicy="origin"
             target="_blank"
