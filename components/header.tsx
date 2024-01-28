@@ -4,22 +4,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "./header.module.sass";
-import { Container, IconButton, ToggleButtonGroup, ToggleButton, Box } from "@mui/material";
+import { Container, Button, Icon } from "@mui/material";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
-  const [stickyHeader, setStickyHeader] = useState(false);
   const pathname = usePathname();
-
-  // State to keep track of the active page
-  const [pageStat, setPageStat] = useState(
-    pathname === "/" ? "home" : pathname.slice(1, pathname.length)
-  );
-
-  // Function to handle changes in the active page
-  const handlePageStat = (event: React.MouseEvent<HTMLElement>, newPage: string | null) => {
-    if (newPage !== null) setPageStat(newPage);
-  };
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
@@ -36,57 +25,27 @@ export default function Header() {
 
   return (
     <Container
+      fixed
       component="header"
       sx={{ height: "10svh" }}
       className={`py-6 flex flex-row items-center justify-between rounded-b-2xl components-background`}
       id="header"
     >
       {/* Social media icons section */}
-      <div className="h-fit flex flex-row align-center justify-center min-w-48">
-        <Link href="https://www.instagram.com/atlantisrp.ir/" target="_blank">
-          <IconButton color="primary" aria-label="delete">
-            <Image
-              src="/images/instagram.svg"
-              alt="atlantis-rp-instagram"
-              width={25}
-              height={25}
-              draggable="false"
-            />
-          </IconButton>
-        </Link>
-        <Link href="https://www.reddit.com/r/AtlantisRP" target="_blank">
-          <IconButton color="primary" aria-label="delete">
-            <Image
-              src="/images/reddit.svg"
-              alt="atlantis-rp-instagram"
-              width={25}
-              height={25}
-              draggable="false"
-            />
-          </IconButton>
-        </Link>
-        <Link href="https://twitter.com/_AtlantisRP_" target="_blank">
-          <IconButton color="primary" aria-label="delete">
-            <Image
-              src="/images/x.svg"
-              alt="atlantis-rp-instagram"
-              width={25}
-              height={25}
-              draggable="false"
-            />
-          </IconButton>
-        </Link>
-        <Link href="https://discord.com/invite/iratlantisrp" target="_blank">
-          <IconButton color="primary" aria-label="delete">
-            <Image
-              src="/images/discord.svg"
-              alt="atlantis-rp-discord"
-              width={25}
-              height={25}
-              draggable="false"
-            />
-          </IconButton>
-        </Link>
+      <div className="h-fit flex flex-row align-center justify-start min-w-36">
+        <Button
+          // color="secondary"
+          variant="text"
+          startIcon={
+            <Icon>
+              <img src="/images/log-in.svg" />
+            </Icon>
+          }
+          className={`rounded-xl text-white`}
+          size="large"
+        >
+          ورود
+        </Button>
       </div>
 
       {/* Atlantis RP logo section */}
@@ -102,26 +61,16 @@ export default function Header() {
       </Link>
 
       {/* Toggle buttons for page navigation */}
-      <div className="h-fit flex flex-row align-center justify-center min-w-48">
-        <ToggleButtonGroup
-          value={pageStat}
-          exclusive
-          className={styles.styledToggleButtonGroup}
-          onChange={handlePageStat}
-          aria-label="text alignment"
-        >
-          <Link href="/rules">
-            <ToggleButton value="rules" aria-label="left aligned">
-              قوانین
-            </ToggleButton>
-          </Link>
+      <div
+        className={`h-fit flex flex-row align-center justify-between min-w-44 ${styles.toggleMenu}`}
+      >
+        <Link href="/rules" className={`${pathname === "/rules" ? styles.selected : ""}`}>
+          قوانین
+        </Link>
 
-          <Link href="/">
-            <ToggleButton value="home" aria-label="centered">
-              صفحه اصلی
-            </ToggleButton>
-          </Link>
-        </ToggleButtonGroup>
+        <Link href="/" className={`${pathname === "/" ? styles.selected : ""}`}>
+          صفحه اصلی
+        </Link>
       </div>
     </Container>
   );
