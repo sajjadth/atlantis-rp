@@ -2,13 +2,34 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import styles from "./header.module.sass";
-import { Container, Button, Icon } from "@mui/material";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import {
+  Container,
+  Button,
+  Icon,
+  List,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Drawer,
+} from "@mui/material";
 
 export default function Header() {
   const pathname = usePathname();
+
+  const [open, setOpen] = useState(false);
+
+  const handleDrawerOpen = () => {
+    setOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     document.addEventListener("scroll", () => {
@@ -60,9 +81,19 @@ export default function Header() {
         />
       </Link>
 
+      <div
+        className={`h-fit flex md:hidden flex-row align-center justify-end min-w-44 ${styles.toggleMenu}`}
+      >
+        <IconButton onClick={handleDrawerOpen} aria-label="fingerprint" className="text-white">
+          <Icon>
+            <img src="/images/menu.svg" />
+          </Icon>
+        </IconButton>
+      </div>
+
       {/* Toggle buttons for page navigation */}
       <div
-        className={`h-fit flex flex-row align-center justify-between min-w-44 ${styles.toggleMenu}`}
+        className={`h-fit md:flex hidden flex-row align-center justify-between min-w-44 ${styles.toggleMenu}`}
       >
         <Link href="/rules" className={`${pathname === "/rules" ? styles.selected : ""}`}>
           قوانین
@@ -72,6 +103,26 @@ export default function Header() {
           صفحه اصلی
         </Link>
       </div>
+
+      <Drawer variant="temporary" anchor="right" open={open} className="w-60 shrink-0 h-svh">
+        <div className="flex flex-row items-center justify-start p-2">
+          <IconButton onClick={handleDrawerClose}>
+            <Icon>
+              <img src="/images/right-arrow.svg" alt="test" />
+            </Icon>
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+          {["صفحه اصلی", "قوانین"].map((text, index) => (
+            <ListItem key={text} disablePadding>
+              <ListItemButton>
+                <ListItemText primary={text} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      </Drawer>
     </Container>
   );
 }
