@@ -11,7 +11,7 @@ export default function Home() {
       {/* Main vertical stack layout */}
       <Container
         sx={{ minHeight: "90svh" }}
-        className="flex flex-col items-center justify-evenly"
+        className="flex flex-col mb-6 gap-8 items-center justify-evenly py-6"
         component="main"
         id="main"
       >
@@ -33,8 +33,8 @@ export default function Home() {
         <Stack
           direction="row"
           alignItems="center"
-          justifyContent="center"
-          style={{ flexWrap: "wrap", gap: "32px" }}
+          justifyContent="space-between"
+          className="w-full gap-6 flex-wrap"
         >
           {/* Gold Plan Card */}
           <Card
