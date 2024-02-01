@@ -33,7 +33,7 @@ export default function Home() {
         <Stack
           direction="row"
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="center"
           className="w-full gap-6 flex-wrap"
         >
           {/* Gold Plan Card */}
