@@ -24,7 +24,7 @@ export async function GET() {
   // If the response status is 200 (OK)
   if (response.status === 200)
     // Return a JSON response with the user's email, username, avatar, and id
-    return NextResponse.json({ email, username, avatar, id });
+    return NextResponse.json({ success: true, email, username, avatar, id });
   // Otherwise
   // Return a JSON response with success set to false and the error message
   else return NextResponse.json({ success: false, message: data.message });
