@@ -1,10 +1,10 @@
-// Import necessary modules and components
 "use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./header.module.sass";
-import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
   Button,
@@ -16,27 +16,91 @@ import {
   ListItemButton,
   ListItemText,
   Drawer,
+  Skeleton,
+  Avatar,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@mui/material";
+import { deleteCookie, getCookie } from "cookies-next";
 
 export default function Header() {
   // Get the current pathname using usePathname hook
   const pathname = usePathname();
 
-  // State to manage the open/close state of the drawer
-  const [open, setOpen] = useState(false);
+  // State variables
+  const [data, setData] = useState<any>(null); // User data
+  const [loading, setLoading] = useState(true); // Loading state
+  const isDataFetched = useRef(false); // Ref to track data fetching
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Menu anchor element
+  const openMenu = Boolean(anchorEl); // Menu open state
+  const [openDialog, setDialog] = React.useState(false); // Dialog open state
+  const [openDrawer, setDrawer] = useState(false); // Drawer open state
+
+  // Function to stop loading state
+  var handleLoadingStop = () => {
+    setLoading(false);
+  };
 
   // Function to handle opening the drawer
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setDrawer(true);
   };
 
   // Function to handle closing the drawer
   const handleDrawerClose = () => {
-    setOpen(false);
+    setDrawer(false);
+  };
+
+  // Function to handle opening the menu
+  const handleMenuClick = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  // Function to handle closing the menu
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  // Function to handle opening the logout dialog
+  const handleDialogOpen = () => {
+    setDialog(true);
+  };
+
+  // Function to handle closing the logout dialog
+  const handleDialogClose = () => {
+    setDialog(false);
+  };
+
+  // Function to handle logout confirmation
+  const handleLogoutConfirm = () => {
+    deleteCookie("discord_auth_token");
+    handleDialogClose();
+    location.reload();
   };
 
   // Effect to handle sticky behavior of the header
   useEffect(() => {
+    if (!isDataFetched.current) {
+      fetch("/api/auth/userinfo", { method: "GET" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setData(data);
+            isDataFetched.current = true;
+          }
+        })
+        .catch((err) => console.log("error in fetch user info\n", err))
+        .finally(() => {
+          handleLoadingStop();
+        });
+    }
+
     document.addEventListener("scroll", () => {
       var header = document.getElementById("header");
 
@@ -72,19 +136,88 @@ export default function Header() {
     >
       {/* Social media icons section */}
       <div className="h-fit flex flex-row align-center justify-start min-w-36">
-        {/* Login button */}
-        <Button
-          variant="text"
-          startIcon={
-            <Icon>
-              <img src="/images/log-in.svg" />
-            </Icon>
-          }
-          className={`rounded-xl text-white`}
-          size="large"
-        >
-          ورود
-        </Button>
+        {/* Login button or user avatar */}
+        {loading ? (
+          <Skeleton
+            className="rounded-xl"
+            variant="rectangular"
+            animation="wave"
+            width={75}
+            height={40}
+          />
+        ) : !data ? (
+          <Button
+            variant="text"
+            startIcon={
+              <Icon>
+                <img src="/images/log-in.svg" />
+              </Icon>
+            }
+            className={`rounded-xl text-white`}
+            size="large"
+            href="/api/auth/login"
+          >
+            ورود
+          </Button>
+        ) : (
+          <>
+            <IconButton
+              onClick={handleMenuClick}
+              size="small"
+              sx={{ ml: 2 }}
+              aria-controls={openMenu ? "account-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={openMenu ? "true" : undefined}
+              className="relative"
+            >
+              <Avatar alt={data.username} src={data.avatar} />
+            </IconButton>
+            <Menu
+              className="rounded-xl"
+              anchorEl={anchorEl}
+              id="account-menu"
+              open={openMenu}
+              onClose={handleMenuClose}
+              onClick={handleMenuClose}
+              PaperProps={{
+                elevation: 0,
+                sx: {
+                  overflow: "visible",
+                  filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                  borderRadius: "0.75rem",
+                  mt: 1.5,
+                  "& .MuiAvatar-root": {
+                    width: 32,
+                    height: 32,
+                    ml: -0.5,
+                    mr: 1,
+                  },
+                },
+              }}
+              transformOrigin={{ horizontal: "right", vertical: "top" }}
+              anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+            >
+              <MenuItem disabled onClick={handleMenuClose}>
+                {data.username}
+              </MenuItem>
+              <MenuItem disabled onClick={handleMenuClose}>
+                {data.email}
+              </MenuItem>
+              <Divider />
+              <MenuItem
+                onClick={() => {
+                  handleMenuClose();
+                  handleDialogOpen();
+                }}
+              >
+                <ListItemIcon>
+                  <img src="/images/logout.svg" alt="" />
+                </ListItemIcon>
+                خروج
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
 
       {/* Atlantis RP logo section */}
@@ -128,7 +261,7 @@ export default function Header() {
       <Drawer
         variant="temporary"
         anchor="right"
-        open={open}
+        open={openDrawer}
         elevation={0}
         sx={{
           "& .MuiDrawer-paper": {
@@ -161,6 +294,44 @@ export default function Header() {
           ))}
         </List>
       </Drawer>
+
+      {/* Dialog for logout confirmation */}
+      <Dialog
+        open={openDialog}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        maxWidth="xs"
+        PaperProps={{
+          elevation: 0,
+          sx: {
+            borderRadius: "0.75rem",
+          },
+        }}
+        dir="rtl"
+      >
+        <DialogTitle gutterBottom> تأیید خروج</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            آیا مطمئن هستید که می‌خواهید از سایت خارج شوید؟ این عمل باعث خروج شما از حساب کاربری شما
+            خواهد شد.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className="flex flex-row items-center justify-between pb-4 px-6">
+          <Button
+            onClick={handleLogoutConfirm}
+            autoFocus
+            variant="contained"
+            color="error"
+            className="rounded-xl"
+          >
+            تأیید خروج
+          </Button>
+          <Button onClick={handleDialogClose} variant="text" color="inherit" className="rounded-xl">
+            لغو
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
