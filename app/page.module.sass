@@ -9,27 +9,48 @@
   border: none !important
   flex-grow: 1 !important
 
-  &::before
-    content: ""
+  padding: 2.5px
+  overflow: hidden
+  z-index: 0
+
+  .innerCard
+    width: 100%
+    height: 100%
+    border-radius: 0.75rem
+    background: black !important
+    z-index: 1
+    transition: background 300ms ease-in-out
+
+  .blob
+    filter: blur(40px)
     position: absolute
+    z-index: -1
     top: 0
-    left: 0
-    right: 0
     bottom: 0
-    border-radius: inherit
-    border: 1px solid transparent
-    mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)
-    -webkit-mask-composite: destination-out
-    mask-composite: exclude
-
-  &Bronze::before
-    background: linear-gradient(250deg, #6a3805ba, #ffffff2e) border-box
-
-  &Silver::before
-    background: linear-gradient(250deg, #d7d7d7ba, #ffffff2e) border-box
-
-  &Gold::before
-    background: linear-gradient(250deg, #c9b037ba, #ffffff2e) border-box
+    right: 0
+    left: 0
+    width: 250px
+    height: 250px
+    margin: auto
+    border-radius: 50%
+    &Gold
+      background: rgba(201, 176, 55, 0.5)
+    &Silver
+      background: rgba(215, 215, 215, 0.5)
+    &Bronze
+      background: rgba(106, 56, 5, 0.5)
+  .fakeBlob
+    display: hidden
+    position: absolute
+    z-index: -1
+    top: 0
+    bottom: 0
+    right: 0
+    left: 0
+    margin: auto
+    width: 200px
+    height: 200px
+    border-radius: 50%
 
 .list
   list-style: none
