@@ -2,7 +2,7 @@
 
 import styles from "./page.module.sass";
 import { Container, Card, Typography, Stack, Button, Icon, TextField, Alert } from "@mui/material";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
@@ -70,7 +70,7 @@ export default function Home() {
           justifyContent="center"
           className="w-full gap-6 flex-wrap"
         >
-          Gold Plan Card
+          {/* Gold Plan Card */}
           <Card
             variant="outlined"
             className={`rounded-2xl flex flex-col items-start justify-between ${styles.card} ${styles.cardGold}`}
