@@ -6,13 +6,14 @@ import { useLayoutEffect, useRef, useState } from "react";
 
 export default function Home() {
   const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
+  const [data, setData] = useState(null);
+  const [userAuthenticated, setUserAuthenticated] = useState(false);
 
   // Create a ref to access the DOM node
   const ref = useRef(null);
 
   // Effect hook to handle animations on mouse movement
   useLayoutEffect(() => {
-    // Query all elements with the 'card' class
     const all = document.querySelectorAll(`.${styles.card}`);
 
     // Event listener for mouse movement
@@ -38,6 +39,18 @@ export default function Home() {
       });
     });
   }, []);
+
+  const cardButtonTitle = () => {
+    if (!data) return "شروع کنید";
+    else if (!userAuthenticated) return "احراز هویت";
+    else "خرید";
+  };
+
+  const cardButtonAction = () => {
+    if (!data) console.log("login");
+    else if (!userAuthenticated) console.log("authentication");
+    else console.log("buy");
+  };
 
   return (
     <>
@@ -116,13 +129,14 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 className="flex flex-row items-start justify-center w-full rounded-xl"
+                onClick={cardButtonAction}
                 endIcon={
                   <Icon>
                     <img src="/images/left-arrow.svg" />
                   </Icon>
                 }
               >
-                شروع کنید
+                {cardButtonTitle()}
               </Button>
 
               {/* Gold Plan features list */}
@@ -177,13 +191,14 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 className="flex flex-row items-start justify-center w-full rounded-xl"
+                onClick={cardButtonAction}
                 endIcon={
                   <Icon>
                     <img src="/images/left-arrow.svg" />
                   </Icon>
                 }
               >
-                شروع کنید
+                {cardButtonTitle()}
               </Button>
 
               {/* Silver Plan features list */}
@@ -237,13 +252,14 @@ export default function Home() {
                 variant="contained"
                 color="primary"
                 className="flex flex-row items-start justify-center w-full rounded-xl"
+                onClick={cardButtonAction}
                 endIcon={
                   <Icon>
                     <img src="/images/left-arrow.svg" />
                   </Icon>
                 }
               >
-                شروع کنید
+                {cardButtonTitle()}
               </Button>
 
               {/* Bronze Plan features list */}
