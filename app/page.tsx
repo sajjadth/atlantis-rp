@@ -2,15 +2,31 @@
 
 import styles from "./page.module.sass";
 import { Container, Card, Typography, Stack, Button, Icon, TextField, Alert } from "@mui/material";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 export default function Home() {
-  const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
+  const isDataFetched = useRef(false); // Ref to track data fetching
   const [data, setData] = useState(null);
+  const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
   const [userAuthenticated, setUserAuthenticated] = useState(false);
 
   // Create a ref to access the DOM node
   const ref = useRef(null);
+
+  // Effect to handle sticky behavior of the header
+  useEffect(() => {
+    if (!isDataFetched.current) {
+      fetch("/api/auth/userinfo", { method: "GET" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            setData(data);
+            isDataFetched.current = true;
+          }
+        })
+        .catch((err) => console.log("error in fetch user info\n", err));
+    }
+  });
 
   // Effect hook to handle animations on mouse movement
   useLayoutEffect(() => {
