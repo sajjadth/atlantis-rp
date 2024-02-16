@@ -1,19 +1,85 @@
 "use client";
 
 import styles from "./page.module.sass";
-import { Container, Card, Typography, Stack, Button, Icon, TextField, Alert } from "@mui/material";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  Container,
+  Card,
+  Typography,
+  Stack,
+  Button,
+  Icon,
+  TextField,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  CircularProgress,
+  Skeleton,
+  InputAdornment,
+} from "@mui/material";
 
 export default function Home() {
+  // Refs to track states and access DOM elements
   const isDataFetched = useRef(false); // Ref to track data fetching
-  const [data, setData] = useState(null);
-  const [goldPlanAmount, setGoldPlanAmount] = useState(299000);
-  const [userAuthenticated, setUserAuthenticated] = useState(false);
+  const ref = useRef(null); // Ref to access the DOM node
 
-  // Create a ref to access the DOM node
-  const ref = useRef(null);
+  // States for various data and UI elements
+  const [data, setData] = useState(null); // Data state for user data
+  const [loading, setLoading] = useState(true); // Loading state
+  const [openDialog, setDialog] = useState(false); // Dialog open state
+  const [phoneNumber, setPhoneNumber] = useState(""); // Phone number state
+  const [goldPlanAmount, setGoldPlanAmount] = useState(299000); // Gold plan price state
+  const [userAuthenticated, setUserAuthenticated] = useState(false); // User Authentication state
+  const [phoneNumberInputError, setPhoneNumberInputError] = useState(false); // Phone number error
+  const [phoneNumberInputErrorMessage, setPhoneNumberInputErrorMessage] = useState(""); // Phone number error message
 
-  // Effect to handle sticky behavior of the header
+  // Function to handle opening the logout dialog
+  const handleDialogOpen = () => {
+    setDialog(true);
+  };
+
+  // Function to handle closing the logout dialog
+  const handleDialogClose = () => {
+    setDialog(false);
+  };
+
+  // Function to set phone number to state
+  const handlePhoneNumberOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  // Function to check if phone number is valid or not
+  const checkPhoneNumber = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const re = /^09\d{9}$/;
+    const target = e.target.value;
+
+    if (!re.test(target)) {
+      setPhoneNumberInputError(true);
+      setPhoneNumberInputErrorMessage("فرمت شماره موبایل اشتباه است!");
+    } else {
+      setPhoneNumberInputError(false);
+      setPhoneNumberInputErrorMessage("");
+    }
+  };
+
+  // Function to send verification code if number is valid
+  const handleAuthentication = () => {
+    const re = /^09\d{9}$/;
+
+    if (!re.test(phoneNumber)) {
+      setPhoneNumberInputError(true);
+      setPhoneNumberInputErrorMessage("فرمت شماره موبایل اشتباه است!");
+    } else {
+      // Check for duplication and verified phone number in database
+      // and sending verification code
+      console.log(phoneNumber);
+    }
+  };
+
+  // Effect to handle data fetching on component mount
   useEffect(() => {
     if (!isDataFetched.current) {
       fetch("/api/auth/userinfo", { method: "GET" })
@@ -24,16 +90,18 @@ export default function Home() {
             isDataFetched.current = true;
           }
         })
-        .catch((err) => console.log("error in fetch user info\n", err));
+        .catch((err) => console.log("error in fetch user info\n", err))
+        .finally(() => {
+          setLoading(false);
+        });
     }
-  });
+  }, []);
 
-  // Effect hook to handle animations on mouse movement
   useLayoutEffect(() => {
     const all = document.querySelectorAll(`.${styles.card}`);
 
     // Event listener for mouse movement
-    window.addEventListener("mousemove", (ev) => {
+    const handleMouseMove = (ev: MouseEvent) => {
       all.forEach((e) => {
         const blob = e.querySelector(`.${styles.blob}`) as Element;
         const fblob = e.querySelector(`.${styles.fakeBlob}`);
@@ -53,18 +121,29 @@ export default function Home() {
           }
         );
       });
-    });
+    };
+
+    // Adding event listener
+    window.addEventListener("mousemove", handleMouseMove);
+
+    // Cleanup function for removing event listener
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
+  // Dynamic button title based on loading and user authentication status
   const cardButtonTitle = () => {
-    if (!data) return "شروع کنید";
+    if (loading) return <CircularProgress size={25} />;
+    else if (!data) return "شروع کنید";
     else if (!userAuthenticated) return "احراز هویت";
-    else "خرید";
+    else return "خرید";
   };
 
+  // Dynamic button action based on data and user authentication status
   const cardButtonAction = () => {
-    if (!data) console.log("login");
-    else if (!userAuthenticated) console.log("authentication");
+    if (!data) window.location.href = "/api/auth/login";
+    else if (!userAuthenticated) handleDialogOpen();
     else console.log("buy");
   };
 
@@ -140,20 +219,32 @@ export default function Home() {
                 <Typography variant="h5">تومان</Typography>
               </Stack>
 
-              {/* Gold Plan get started button */}
-              <Button
-                variant="contained"
-                color="primary"
-                className="flex flex-row items-start justify-center w-full rounded-xl"
-                onClick={cardButtonAction}
-                endIcon={
-                  <Icon>
-                    <img src="/images/left-arrow.svg" />
-                  </Icon>
-                }
-              >
-                {cardButtonTitle()}
-              </Button>
+              {/* Gold Plan */}
+              {loading ? (
+                // Show skeleton loading if loading is true
+                <Skeleton
+                  className="rounded-xl"
+                  variant="rectangular"
+                  animation="wave"
+                  width="100%"
+                  height={37}
+                />
+              ) : (
+                //show button when loading end
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="flex flex-row items-start justify-center w-full rounded-xl"
+                  onClick={cardButtonAction}
+                  endIcon={
+                    <Icon>
+                      <img src="/images/left-arrow.svg" />
+                    </Icon>
+                  }
+                >
+                  {cardButtonTitle()}
+                </Button>
+              )}
 
               {/* Gold Plan features list */}
               <ul
@@ -190,7 +281,6 @@ export default function Home() {
                   ساعته به سرور، پشتیبانی ۲۴ ساعته و اولویت بیشتر در صف است.
                 </Typography>
               </div>
-
               {/* Silver Plan pricing */}
               <Stack direction="row" alignItems="center" className="pb-4 h-20">
                 <div className="flex flex-row items-center">
@@ -201,22 +291,32 @@ export default function Home() {
                 </div>
                 <Typography variant="h5">تومان</Typography>
               </Stack>
-
-              {/* Silver Plan get started button */}
-              <Button
-                variant="contained"
-                color="primary"
-                className="flex flex-row items-start justify-center w-full rounded-xl"
-                onClick={cardButtonAction}
-                endIcon={
-                  <Icon>
-                    <img src="/images/left-arrow.svg" />
-                  </Icon>
-                }
-              >
-                {cardButtonTitle()}
-              </Button>
-
+              {/* Silver Plan*/}
+              {loading ? (
+                // Show skeleton loading if loading is true
+                <Skeleton
+                  className="rounded-xl"
+                  variant="rectangular"
+                  animation="wave"
+                  width="100%"
+                  height={37}
+                />
+              ) : (
+                //show button when loading end
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="flex flex-row items-start justify-center w-full rounded-xl"
+                  onClick={cardButtonAction}
+                  endIcon={
+                    <Icon>
+                      <img src="/images/left-arrow.svg" />
+                    </Icon>
+                  }
+                >
+                  {cardButtonTitle()}
+                </Button>
+              )}
               {/* Silver Plan features list */}
               <ul
                 className={`flex flex-col items-start justify-start pr-6 pt-4 h-44 ${styles.list}`}
@@ -263,20 +363,32 @@ export default function Home() {
                 <Typography variant="h5">تومان</Typography>
               </Stack>
 
-              {/* Bronze Plan get started button */}
-              <Button
-                variant="contained"
-                color="primary"
-                className="flex flex-row items-start justify-center w-full rounded-xl"
-                onClick={cardButtonAction}
-                endIcon={
-                  <Icon>
-                    <img src="/images/left-arrow.svg" />
-                  </Icon>
-                }
-              >
-                {cardButtonTitle()}
-              </Button>
+              {/* Bronze Plan */}
+              {loading ? (
+                // Show skeleton loading if loading is true
+                <Skeleton
+                  className="rounded-xl"
+                  variant="rectangular"
+                  animation="wave"
+                  width="100%"
+                  height={37}
+                />
+              ) : (
+                //show button when loading end
+                <Button
+                  variant="contained"
+                  color="primary"
+                  className="flex flex-row items-start justify-center w-full rounded-xl"
+                  onClick={cardButtonAction}
+                  endIcon={
+                    <Icon>
+                      <img src="/images/left-arrow.svg" />
+                    </Icon>
+                  }
+                >
+                  {cardButtonTitle()}
+                </Button>
+              )}
 
               {/* Bronze Plan features list */}
               <ul
@@ -287,9 +399,83 @@ export default function Home() {
             </div>
           </Card>
         </Stack>
+
+        {/* Alert for payment disclaimer */}
         <Alert severity="warning" dir="rtl" className={`rounded-2xl ${styles.alert}`}>
           در نظر داشته باشید که بعد از پرداخت به هیچ وجه مبلغ اشتراک شما بازگشت داده نمی شود !
         </Alert>
+
+        {/* Dialog for user authentication */}
+        <Dialog
+          open={openDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          maxWidth="xs"
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              borderRadius: "0.75rem",
+            },
+          }}
+          dir="rtl"
+        >
+          <DialogTitle gutterBottom>احراز هویت</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              برای ادامه‌ فرآیند، لطفاً شماره موبایل خود را وارد کنید تا کد تأیید برای شما ارسال
+              شود.
+            </DialogContentText>
+            <div
+              className="w-100 py-4 flex gap-4 dir-rtl flex-row items-end justify-cneter"
+              dir="rtl"
+            >
+              {/* Input field for phone number */}
+              <TextField
+                variant="standard"
+                color={"primary"}
+                error={phoneNumberInputError}
+                placeholder="09123456789"
+                label="شماره تلفن"
+                InputLabelProps={{ classes: { root: styles.textFieldLabel } }}
+                value={phoneNumber}
+                onChange={(e) => handlePhoneNumberOnChange(e)}
+                onBlur={checkPhoneNumber}
+                helperText={phoneNumberInputErrorMessage}
+                FormHelperTextProps={{ classes: { root: styles.textFieldHelperText } }}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="end">
+                      <Icon sx={{ transform: "scale(-1,1)" }}>
+                        <img src="/images/call.svg" alt="" />
+                      </Icon>
+                    </InputAdornment>
+                  ),
+                }}
+                fullWidth
+              />
+            </div>
+          </DialogContent>
+          <DialogActions className="flex flex-row items-center justify-between pb-4 px-6">
+            {/* Buttons for authentication */}
+            <Button
+              autoFocus
+              variant="contained"
+              color="success"
+              className="rounded-xl"
+              onClick={handleAuthentication}
+            >
+              تأیید
+            </Button>
+            <Button
+              onClick={handleDialogClose}
+              variant="text"
+              color="inherit"
+              className="rounded-xl"
+            >
+              لغو
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );
