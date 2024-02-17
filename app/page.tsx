@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./page.module.sass";
+import { PlanType } from "@/constants/planType";
 import { ChangeEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Container,
@@ -141,10 +142,40 @@ export default function Home() {
   };
 
   // Dynamic button action based on data and user authentication status
-  const cardButtonAction = () => {
+  const cardButtonAction = (planType: PlanType) => {
     if (!data) window.location.href = "/api/auth/login";
     else if (!userAuthenticated) handleDialogOpen();
     else console.log("buy");
+  };
+
+  // Define a custom component for the action button
+  const actionButton = (planType: PlanType) => {
+    // Return different elements based on the loading state
+    return loading ? (
+      // Show skeleton loading if loading is true
+      <Skeleton
+        className="rounded-xl"
+        variant="rectangular"
+        animation="wave"
+        width="100%"
+        height={37}
+      />
+    ) : (
+      //show button when loading end
+      <Button
+        variant="contained"
+        color="primary"
+        className="flex flex-row items-start justify-center w-full rounded-xl"
+        onClick={() => cardButtonAction(planType)}
+        endIcon={
+          <Icon>
+            <img src="/images/left-arrow.svg" />
+          </Icon>
+        }
+      >
+        {cardButtonTitle()}
+      </Button>
+    );
   };
 
   return (
@@ -220,31 +251,7 @@ export default function Home() {
               </Stack>
 
               {/* Gold Plan */}
-              {loading ? (
-                // Show skeleton loading if loading is true
-                <Skeleton
-                  className="rounded-xl"
-                  variant="rectangular"
-                  animation="wave"
-                  width="100%"
-                  height={37}
-                />
-              ) : (
-                //show button when loading end
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="flex flex-row items-start justify-center w-full rounded-xl"
-                  onClick={cardButtonAction}
-                  endIcon={
-                    <Icon>
-                      <img src="/images/left-arrow.svg" />
-                    </Icon>
-                  }
-                >
-                  {cardButtonTitle()}
-                </Button>
-              )}
+              {actionButton(PlanType.Gold)}
 
               {/* Gold Plan features list */}
               <ul
@@ -292,31 +299,7 @@ export default function Home() {
                 <Typography variant="h5">تومان</Typography>
               </Stack>
               {/* Silver Plan*/}
-              {loading ? (
-                // Show skeleton loading if loading is true
-                <Skeleton
-                  className="rounded-xl"
-                  variant="rectangular"
-                  animation="wave"
-                  width="100%"
-                  height={37}
-                />
-              ) : (
-                //show button when loading end
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="flex flex-row items-start justify-center w-full rounded-xl"
-                  onClick={cardButtonAction}
-                  endIcon={
-                    <Icon>
-                      <img src="/images/left-arrow.svg" />
-                    </Icon>
-                  }
-                >
-                  {cardButtonTitle()}
-                </Button>
-              )}
+              {actionButton(PlanType.Silver)}
               {/* Silver Plan features list */}
               <ul
                 className={`flex flex-col items-start justify-start pr-6 pt-4 h-44 ${styles.list}`}
@@ -364,31 +347,7 @@ export default function Home() {
               </Stack>
 
               {/* Bronze Plan */}
-              {loading ? (
-                // Show skeleton loading if loading is true
-                <Skeleton
-                  className="rounded-xl"
-                  variant="rectangular"
-                  animation="wave"
-                  width="100%"
-                  height={37}
-                />
-              ) : (
-                //show button when loading end
-                <Button
-                  variant="contained"
-                  color="primary"
-                  className="flex flex-row items-start justify-center w-full rounded-xl"
-                  onClick={cardButtonAction}
-                  endIcon={
-                    <Icon>
-                      <img src="/images/left-arrow.svg" />
-                    </Icon>
-                  }
-                >
-                  {cardButtonTitle()}
-                </Button>
-              )}
+              {actionButton(PlanType.Bronze)}
 
               {/* Bronze Plan features list */}
               <ul
