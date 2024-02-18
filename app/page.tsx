@@ -1,7 +1,7 @@
 "use client";
 
 import styles from "./page.module.sass";
-import { PlanType } from "@/constants/planType";
+import { PlanType } from "@/constants/Plan.type";
 import { ChangeEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   Container,
@@ -12,15 +12,10 @@ import {
   Icon,
   TextField,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
   CircularProgress,
   Skeleton,
-  InputAdornment,
 } from "@mui/material";
+import AuthDialog from "@/components/authDialog";
 
 export default function Home() {
   // Refs to track states and access DOM elements
@@ -31,11 +26,8 @@ export default function Home() {
   const [data, setData] = useState(null); // Data state for user data
   const [loading, setLoading] = useState(true); // Loading state
   const [openDialog, setDialog] = useState(false); // Dialog open state
-  const [phoneNumber, setPhoneNumber] = useState(""); // Phone number state
   const [goldPlanAmount, setGoldPlanAmount] = useState(299000); // Gold plan price state
   const [userAuthenticated, setUserAuthenticated] = useState(false); // User Authentication state
-  const [phoneNumberInputError, setPhoneNumberInputError] = useState(false); // Phone number error
-  const [phoneNumberInputErrorMessage, setPhoneNumberInputErrorMessage] = useState(""); // Phone number error message
 
   // Function to handle opening the logout dialog
   const handleDialogOpen = () => {
@@ -45,39 +37,6 @@ export default function Home() {
   // Function to handle closing the logout dialog
   const handleDialogClose = () => {
     setDialog(false);
-  };
-
-  // Function to set phone number to state
-  const handlePhoneNumberOnChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setPhoneNumber(e.target.value);
-  };
-
-  // Function to check if phone number is valid or not
-  const checkPhoneNumber = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const re = /^09\d{9}$/;
-    const target = e.target.value;
-
-    if (!re.test(target)) {
-      setPhoneNumberInputError(true);
-      setPhoneNumberInputErrorMessage("فرمت شماره موبایل اشتباه است!");
-    } else {
-      setPhoneNumberInputError(false);
-      setPhoneNumberInputErrorMessage("");
-    }
-  };
-
-  // Function to send verification code if number is valid
-  const handleAuthentication = () => {
-    const re = /^09\d{9}$/;
-
-    if (!re.test(phoneNumber)) {
-      setPhoneNumberInputError(true);
-      setPhoneNumberInputErrorMessage("فرمت شماره موبایل اشتباه است!");
-    } else {
-      // Check for duplication and verified phone number in database
-      // and sending verification code
-      console.log(phoneNumber);
-    }
   };
 
   // Effect to handle data fetching on component mount
@@ -364,77 +323,7 @@ export default function Home() {
           در نظر داشته باشید که بعد از پرداخت به هیچ وجه مبلغ اشتراک شما بازگشت داده نمی شود !
         </Alert>
 
-        {/* Dialog for user authentication */}
-        <Dialog
-          open={openDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          maxWidth="xs"
-          PaperProps={{
-            elevation: 0,
-            sx: {
-              borderRadius: "0.75rem",
-            },
-          }}
-          dir="rtl"
-        >
-          <DialogTitle gutterBottom>احراز هویت</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              برای ادامه‌ فرآیند، لطفاً شماره موبایل خود را وارد کنید تا کد تأیید برای شما ارسال
-              شود.
-            </DialogContentText>
-            <div
-              className="w-100 py-4 flex gap-4 dir-rtl flex-row items-end justify-cneter"
-              dir="rtl"
-            >
-              {/* Input field for phone number */}
-              <TextField
-                variant="standard"
-                color={"primary"}
-                error={phoneNumberInputError}
-                placeholder="09123456789"
-                label="شماره تلفن"
-                InputLabelProps={{ classes: { root: styles.textFieldLabel } }}
-                value={phoneNumber}
-                onChange={(e) => handlePhoneNumberOnChange(e)}
-                onBlur={checkPhoneNumber}
-                helperText={phoneNumberInputErrorMessage}
-                FormHelperTextProps={{ classes: { root: styles.textFieldHelperText } }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="end">
-                      <Icon sx={{ transform: "scale(-1,1)" }}>
-                        <img src="/images/call.svg" alt="" />
-                      </Icon>
-                    </InputAdornment>
-                  ),
-                }}
-                fullWidth
-              />
-            </div>
-          </DialogContent>
-          <DialogActions className="flex flex-row items-center justify-between pb-4 px-6">
-            {/* Buttons for authentication */}
-            <Button
-              autoFocus
-              variant="contained"
-              color="success"
-              className="rounded-xl"
-              onClick={handleAuthentication}
-            >
-              تأیید
-            </Button>
-            <Button
-              onClick={handleDialogClose}
-              variant="text"
-              color="inherit"
-              className="rounded-xl"
-            >
-              لغو
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <AuthDialog openDialog={openDialog} handleDialogClose={handleDialogClose} />
       </Container>
     </>
   );
