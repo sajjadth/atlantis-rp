@@ -5,6 +5,7 @@ import { createTheme } from "@mui/material/styles";
 const vazirmatn = Vazirmatn({
   weight: ["300", "400", "500", "700", "800", "900"],
   subsets: ["arabic"],
+  display: "auto",
 });
 
 const theme = createTheme({

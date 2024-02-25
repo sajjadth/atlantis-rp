@@ -13,6 +13,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 const vazirmatn = Vazirmatn({
   weight: ["300", "400", "500", "700", "800", "900"],
   subsets: ["arabic"],
+  display:"swap",
 });
 
 export const metadata: Metadata = {
