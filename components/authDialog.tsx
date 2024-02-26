@@ -14,16 +14,23 @@ import {
   Icon,
   IconButton,
   InputAdornment,
+  LinearProgress,
   MobileStepper,
   TextField,
+  Typography,
 } from "@mui/material";
+import { MuiOtpInput } from "mui-one-time-password-input";
 
 export default function AuthDialog(props: AuthDialogProps) {
+  const [timer, setTimer] = useState(120); // Timer state for phone number verification
   const [loading, setLoading] = useState(false); // Loading state
   const [activeStep, setActiveStep] = useState(0); // Active step of dialog state
   const [phoneNumber, setPhoneNumber] = useState(""); // Phone number state
+  const [timerProgress, setTimerProgress] = useState(100); // Timer Progress state for linear progress bar
+  const [verificationCode, setVerificationCode] = useState(""); // Phone number state
   const [phoneNumberInputError, setPhoneNumberInputError] = useState(false); // Phone number error
   const [phoneNumberInputErrorMessage, setPhoneNumberInputErrorMessage] = useState(""); // Phone number error message
+  const [intervalId, setIntervalId] = useState<ReturnType<typeof setInterval> | null>(null); // State hook for storing the interval ID
 
   // Define the maximum number of steps
   const MAX_STEPS = 3;
@@ -53,6 +60,63 @@ export default function AuthDialog(props: AuthDialogProps) {
     setPhoneNumber(e.target.value);
   };
 
+  // Function to set verification code to state
+  const handleVerificationCodeOnChange = (e: string) => {
+    setVerificationCode(e);
+  };
+
+  // Modified startTimer function that stores the interval ID in state
+  function startTimer() {
+    // Set the interval ID
+    const id = setInterval(() => {
+      setTimer((prevTimer) => {
+        // calculate the progress of timer
+        calculateProgress(prevTimer - 1);
+
+        // When timer reaches 0, clear the interval and return 0
+        if (prevTimer === 0) {
+          clearInterval(id);
+          setIntervalId(null);
+          return 0;
+        }
+        // Otherwise, decrement the timer by 1
+        return prevTimer - 1;
+      });
+    }, 1000); // Set the interval to decrement every second
+
+    // Store the interval ID
+    setIntervalId(id);
+  }
+
+  // Modified resetTimer function that uses the interval ID from state
+  function resetTimer() {
+    if (intervalId) clearInterval(intervalId);
+    setIntervalId(null);
+    setTimer(120);
+  }
+
+  // Function to calculate progress percentage
+  function calculateProgress(timer: any) {
+    // Calculate percentage of time elapsed
+    let totalTime = 120; // Total time
+    let percentage = (timer / totalTime) * 100; // Calculate percentage
+
+    //set the percentage to state
+    setTimerProgress(percentage);
+  }
+
+  // Converts a number of seconds into a formatted string of minutes and seconds.
+  function convertSeconds(): string {
+    const minutes = Math.floor(timer / 60);
+    const seconds = timer % 60;
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  // Function for sending new verification code
+  function sendAgain() {
+    resetTimer();
+  }
+
   // Dynamic button title based on loading and user authentication status
   const dialogButtonTitle = () => {
     if (loading) return <CircularProgress size={25} />;
@@ -66,7 +130,6 @@ export default function AuthDialog(props: AuthDialogProps) {
     if (activeStep === 0) handleAuthenticationCodeSend();
     else if (activeStep === 1) handleVerifyAuthenticationCode();
     else props.handleDialogClose();
-    handleNext();
   };
 
   // Function to send verification code if number is valid
@@ -80,6 +143,8 @@ export default function AuthDialog(props: AuthDialogProps) {
       // Check for duplication and verified phone number in database
       // and sending verification code
       console.log(phoneNumber);
+      handleNext();
+      startTimer();
     }
   };
 
@@ -149,6 +214,43 @@ export default function AuthDialog(props: AuthDialogProps) {
                 }}
                 fullWidth
               />
+            </div>
+          </DialogContent>
+        ) : activeStep === 1 ? (
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              برای ادامه‌ فرآیند، لطفاً شماره موبایل خود را وارد کنید تا کد تأیید برای شما ارسال
+              شود.
+            </DialogContentText>
+            <div
+              className="w-100 py-4 flex gap-4 dir-rtl flex-row items-end justify-cneter"
+              dir="rtl"
+            >
+              {/* Input for entering the verification code */}
+              <MuiOtpInput
+                dir="ltr"
+                TextFieldsProps={{ classes: { root: styles.otpInput } }}
+                length={6}
+                value={verificationCode}
+                onChange={handleVerificationCodeOnChange}
+                autoFocus
+              />
+            </div>
+            <div className="w-100 py-4 gap-4 flex flex-col items-center justify-center">
+              {/* Displaying the countdown timer */}
+              <Typography variant="subtitle1">{convertSeconds()}</Typography>
+              {/* Linear progress bar to indicate the countdown progress */}
+              <LinearProgress className="w-full" variant="determinate" value={timerProgress} />
+              {/* Button for resending the verification code */}
+              <Button
+                className="rounded-xl"
+                variant="text"
+                disabled={timer !== 0 || loading}
+                onClick={sendAgain}
+              >
+                {/* Displaying either a loading spinner or the "Resend" text based on the loading state */}
+                {loading ? <CircularProgress size={25} /> : "ارسال مجدد"}
+              </Button>
             </div>
           </DialogContent>
         ) : (
