@@ -39,6 +39,11 @@ export default function Home() {
     setDialog(false);
   };
 
+  // Sets the userAuthenticated state to true upon successful authentication.
+  const handleUserAuthentication = () => {
+    setUserAuthenticated(true);
+  };
+
   // Effect to handle data fetching on component mount
   useEffect(() => {
     if (!isDataFetched.current) {
@@ -323,7 +328,11 @@ export default function Home() {
           در نظر داشته باشید که بعد از پرداخت به هیچ وجه مبلغ اشتراک شما بازگشت داده نمی شود !
         </Alert>
 
-        <AuthDialog openDialog={openDialog} handleDialogClose={handleDialogClose} />
+        <AuthDialog
+          openDialog={openDialog}
+          handleDialogClose={handleDialogClose}
+          handleUserAuthentication={handleUserAuthentication}
+        />
       </Container>
     </>
   );
