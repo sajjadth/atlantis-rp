@@ -1,11 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import styles from "./authDialog.module.sass";
 import { ChangeEvent, useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { AuthDialogProps } from "@/constants/AuthDialog.interface";
 import {
-  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -151,7 +151,15 @@ export default function AuthDialog(props: AuthDialogProps) {
 
   // Function to verify authentication code
   const handleVerifyAuthenticationCode = () => {
-    console.log("verify authentication Code");
+    // should chekc the verification code from backend
+
+    console.log("verify authentication Code:", verificationCode);
+
+    // Check if the verification code is complete and proceed with authentication
+    if (verificationCode.length === 6) {
+      props.handleUserAuthentication();
+      handleNext();
+    }
   };
 
   return (
@@ -255,7 +263,24 @@ export default function AuthDialog(props: AuthDialogProps) {
             </div>
           </DialogContent>
         ) : (
-          <Box sx={{ height: 255, maxWidth: 400, width: "100%", p: 2 }}>Verify</Box>
+          <DialogContent>
+            {/* Verification success message */}
+            <DialogContentText id="alert-dialog-description">
+              احراز هویت شما با موفقیت به پایان رسید.
+            </DialogContentText>
+            <div
+              className="w-100 py-4 flex gap-4 dir-rtl flex-row items-end justify-cneter"
+              dir="rtl"
+            >
+              {/* Verification success illustration */}
+              <Image
+                src="/images/completing-illustration.svg"
+                alt="completing illustration"
+                width={300}
+                height={300}
+              />
+            </div>
+          </DialogContent>
         )}
 
         {/* Mobile stepper for navigation */}
@@ -267,18 +292,14 @@ export default function AuthDialog(props: AuthDialogProps) {
           dir="ltr"
           className="pb-4 px-6"
           nextButton={
-            <Button
-              onClick={dialogButtonAction}
-              disabled={activeStep === MAX_STEPS - 1 || loading}
-              className="rounded-xl"
-            >
+            <Button onClick={dialogButtonAction} disabled={loading} className="rounded-xl">
               {dialogButtonTitle()}
             </Button>
           }
           backButton={
             <Button
               onClick={handleBack}
-              disabled={activeStep === 0 || loading}
+              disabled={activeStep === 0 || loading || activeStep === MAX_STEPS}
               className="rounded-xl"
             >
               قبلی
