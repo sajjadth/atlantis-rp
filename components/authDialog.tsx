@@ -1,7 +1,8 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
 import styles from "./authDialog.module.sass";
+import { ChangeEvent, useState } from "react";
+import { MuiOtpInput } from "mui-one-time-password-input";
 import { AuthDialogProps } from "@/constants/AuthDialog.interface";
 import {
   Box,
@@ -19,7 +20,6 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { MuiOtpInput } from "mui-one-time-password-input";
 
 export default function AuthDialog(props: AuthDialogProps) {
   const [timer, setTimer] = useState(120); // Timer state for phone number verification
@@ -93,6 +93,7 @@ export default function AuthDialog(props: AuthDialogProps) {
     if (intervalId) clearInterval(intervalId);
     setIntervalId(null);
     setTimer(120);
+    startTimer();
   }
 
   // Function to calculate progress percentage
