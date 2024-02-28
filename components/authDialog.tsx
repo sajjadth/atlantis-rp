@@ -212,15 +212,6 @@ export default function AuthDialog(props: AuthDialogProps) {
                 onBlur={checkPhoneNumber}
                 helperText={phoneNumberInputErrorMessage}
                 FormHelperTextProps={{ classes: { root: styles.textFieldHelperText } }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="end">
-                      <Icon sx={{ transform: "scale(-1,1)" }}>
-                        <img src="/images/call.svg" alt="" />
-                      </Icon>
-                    </InputAdornment>
-                  ),
-                }}
                 fullWidth
               />
             </div>
@@ -285,7 +276,7 @@ export default function AuthDialog(props: AuthDialogProps) {
 
         {/* Mobile stepper for navigation */}
         <MobileStepper
-          variant="progress"
+          variant="dots"
           steps={MAX_STEPS}
           position="static"
           activeStep={activeStep}
@@ -299,7 +290,7 @@ export default function AuthDialog(props: AuthDialogProps) {
           backButton={
             <Button
               onClick={handleBack}
-              disabled={activeStep === 0 || loading || activeStep === MAX_STEPS}
+              disabled={activeStep === 0 || loading || activeStep === MAX_STEPS - 1}
               className="rounded-xl"
             >
               قبلی
