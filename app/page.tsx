@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./page.module.sass";
+import AuthDialog from "@/components/authDialog";
 import { PlanType } from "@/constants/Plan.type";
 import { ChangeEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
@@ -15,7 +16,6 @@ import {
   CircularProgress,
   Skeleton,
 } from "@mui/material";
-import AuthDialog from "@/components/authDialog";
 
 export default function Home() {
   // Refs to track states and access DOM elements
@@ -26,7 +26,7 @@ export default function Home() {
   const [data, setData] = useState(null); // Data state for user data
   const [loading, setLoading] = useState(true); // Loading state
   const [openDialog, setDialog] = useState(false); // Dialog open state
-  const [goldPlanAmount, setGoldPlanAmount] = useState(299000); // Gold plan price state
+  const [goldPlanPrice, setGoldPlanPrice] = useState("299,000"); // Gold plan price state
   const [userAuthenticated, setUserAuthenticated] = useState(false); // User Authentication state
 
   // Function to handle opening the logout dialog
@@ -42,6 +42,32 @@ export default function Home() {
   // Sets the userAuthenticated state to true upon successful authentication.
   const handleUserAuthentication = () => {
     setUserAuthenticated(true);
+  };
+
+  // Handle changes in the input field for gold plan price.
+  // This function ensures that only numbers and dots are accepted as input,
+  // and formats the input value to have three decimal places separated by a dot.
+  const handleGoldPlanPrice = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    // Extract the input value from the event object
+    const inputValue = p2e(e.target.value);
+
+    // Remove any non-numeric characters from the input value
+    const numericValue = inputValue.replace(/[^0-9]/g, "");
+    console.log(inputValue, numericValue);
+
+    // Format the numeric value to add commas every three digits from the right
+    const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+    setGoldPlanPrice(formattedValue);
+  };
+
+  // Ensure goldPlanPrice (a string with commas) is at least 299,000 by calling setGoldPlanPrice
+  const chekcGoldPlanPrice = () => {
+    // Convert the goldPlanPrice string to a number by removing the commas
+    const price = Number(goldPlanPrice.split(",").join(""));
+
+    // If the price is less than 299,000, set the goldPlanPrice to "299,000"
+    if (price < 299000) setGoldPlanPrice("299,000");
   };
 
   // Effect to handle data fetching on component mount
@@ -142,6 +168,11 @@ export default function Home() {
     );
   };
 
+  // Converts a numeric value to its Farsi (Persian) numeral representation.
+  const e2p = (s: string): string => s.replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[parseInt(d, 10)]);
+  // Converts a Persian numeral value to its English numeral representation.
+  const p2e = (s: string): string => s.replace(/[۰-۹]/g, (d) => "۰۱۲۳۴۵۶۷۸۹".indexOf(d).toString());
+
   return (
     <>
       {/* Main vertical stack layout */}
@@ -205,10 +236,12 @@ export default function Home() {
                   <Typography variant="h5">ماهانه</Typography>
                   <TextField
                     id="standard-basic"
-                    value="۲۹۹,۰۰۰"
+                    value={e2p(goldPlanPrice)}
                     variant="standard"
                     color="primary"
                     className={`font-bold text-3xl px-4 ${styles.input}`}
+                    onChange={(e) => handleGoldPlanPrice(e)}
+                    onBlur={chekcGoldPlanPrice}
                   />
                 </div>
                 <Typography variant="h5">تومان</Typography>
