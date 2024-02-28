@@ -27,20 +27,21 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { deleteCookie, getCookie } from "cookies-next";
+import { deleteCookie } from "cookies-next";
 
 export default function Header() {
   // Get the current pathname using usePathname hook
   const pathname = usePathname();
 
   // State variables
+  const isDataFetched = useRef(false); // Ref to track data fetching
   const [data, setData] = useState<any>(null); // User data
   const [loading, setLoading] = useState(true); // Loading state
-  const isDataFetched = useRef(false); // Ref to track data fetching
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Menu anchor element
-  const openMenu = Boolean(anchorEl); // Menu open state
-  const [openDialog, setDialog] = React.useState(false); // Dialog open state
   const [openDrawer, setDrawer] = useState(false); // Drawer open state
+  const [openDialog, setDialog] = React.useState(false); // Dialog open state
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null); // Menu anchor element
+
+  const openMenu = Boolean(anchorEl); // Menu open state
 
   // Function to stop loading state
   var handleLoadingStop = () => {
