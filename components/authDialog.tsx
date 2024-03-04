@@ -6,6 +6,7 @@ import { ChangeEvent, useState } from "react";
 import { MuiOtpInput } from "mui-one-time-password-input";
 import { AuthDialogProps } from "@/constants/AuthDialog.interface";
 import {
+  Alert,
   Button,
   CircularProgress,
   Dialog,
@@ -17,6 +18,7 @@ import {
   InputAdornment,
   LinearProgress,
   MobileStepper,
+  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -27,8 +29,10 @@ export default function AuthDialog(props: AuthDialogProps) {
   const [activeStep, setActiveStep] = useState(0); // Active step of dialog state
   const [phoneNumber, setPhoneNumber] = useState(""); // Phone number state
   const [timerProgress, setTimerProgress] = useState(100); // Timer Progress state for linear progress bar
+  const [snackbaropen, setSnackbarOpen] = useState(false); // State hooks for managing snackbar
   const [verificationCode, setVerificationCode] = useState(""); // Phone number state
   const [phoneNumberInputError, setPhoneNumberInputError] = useState(false); // Phone number error
+  const [snackbar, setSnackbar] = useState({ success: false, message: "" }); // State hooks for managing snackbar data
   const [phoneNumberInputErrorMessage, setPhoneNumberInputErrorMessage] = useState(""); // Phone number error message
   const [intervalId, setIntervalId] = useState<ReturnType<typeof setInterval> | null>(null); // State hook for storing the interval ID
 
@@ -65,8 +69,22 @@ export default function AuthDialog(props: AuthDialogProps) {
     setVerificationCode(e);
   };
 
+  // Function to handle closing snackbar
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
+  };
+
+  // Function to handle opening snackbar
+  const handleSnackbarOpen = (success: boolean, message: string) => {
+    setSnackbar({ success, message });
+    setSnackbarOpen(true);
+  };
+
   // Modified startTimer function that stores the interval ID in state
   function startTimer() {
+    if (intervalId) clearInterval(intervalId);
+    setIntervalId(null);
+    setTimer(120);
     // Set the interval ID
     const id = setInterval(() => {
       setTimer((prevTimer) => {
@@ -90,9 +108,6 @@ export default function AuthDialog(props: AuthDialogProps) {
 
   // Modified resetTimer function that uses the interval ID from state
   function resetTimer() {
-    if (intervalId) clearInterval(intervalId);
-    setIntervalId(null);
-    setTimer(120);
     startTimer();
   }
 
@@ -115,7 +130,21 @@ export default function AuthDialog(props: AuthDialogProps) {
 
   // Function for sending new verification code
   function sendAgain() {
-    resetTimer();
+    setLoading(true);
+    fetch("/api/auth/phone-verification", {
+      method: "POST",
+      body: JSON.stringify({ phoneNumber }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("this is data", data);
+        if (data.success) {
+          handleSnackbarOpen(true, data.message);
+          resetTimer();
+        } else handleSnackbarOpen(false, data.message);
+      })
+      .catch((err) => console.log("this is error", err))
+      .finally(() => setLoading(false));
   }
 
   // Dynamic button title based on loading and user authentication status
@@ -141,24 +170,44 @@ export default function AuthDialog(props: AuthDialogProps) {
       setPhoneNumberInputError(true);
       setPhoneNumberInputErrorMessage("فرمت شماره موبایل اشتباه است!");
     } else {
-      // Check for duplication and verified phone number in database
-      // and sending verification code
-      console.log(phoneNumber);
-      handleNext();
-      startTimer();
+      setLoading(true);
+      fetch("/api/auth/phone-verification", {
+        method: "POST",
+        body: JSON.stringify({ phoneNumber }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("this is data", data);
+          if (data.success) {
+            handleSnackbarOpen(true, data.message);
+            handleNext();
+            startTimer();
+          } else handleSnackbarOpen(false, data.message);
+        })
+        .catch((err) => console.log("this is error", err))
+        .finally(() => setLoading(false));
     }
   };
 
   // Function to verify authentication code
   const handleVerifyAuthenticationCode = () => {
-    // should chekc the verification code from backend
-
-    console.log("verify authentication Code:", verificationCode);
-
     // Check if the verification code is complete and proceed with authentication
     if (verificationCode.length === 6) {
-      props.handleUserAuthentication();
-      handleNext();
+      setLoading(true);
+      fetch("/api/auth/phone-verification", {
+        method: "PUT",
+        body: JSON.stringify({ verificationCode }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            handleSnackbarOpen(true, data.message);
+            props.handleUserAuthentication();
+            handleNext();
+          } else handleSnackbarOpen(false, data.message);
+        })
+        .catch((err) => console.log("error:", err))
+        .finally(() => setLoading(false));
     }
   };
 
@@ -298,6 +347,19 @@ export default function AuthDialog(props: AuthDialogProps) {
           }
         />
       </Dialog>
+
+      {/* Snackbar component to display success or error messages */}
+      <Snackbar open={snackbaropen} autoHideDuration={5000} onClose={handleCloseSnackbar}>
+        <Alert
+          className="rounded-xl"
+          onClose={handleCloseSnackbar}
+          severity={snackbar.success ? "success" : "error"}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
