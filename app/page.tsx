@@ -1,6 +1,7 @@
 "use client";
 
 import styles from "./page.module.sass";
+import { getCookie } from "cookies-next";
 import AuthDialog from "@/components/authDialog";
 import { PlanType } from "@/constants/Plan.type";
 import { ChangeEvent, useEffect, useLayoutEffect, useRef, useState } from "react";
@@ -73,6 +74,14 @@ export default function Home() {
   // Effect to handle data fetching on component mount
   useEffect(() => {
     if (!isDataFetched.current) {
+      // check for user authenticated
+      try {
+        setUserAuthenticated(JSON.parse(String(getCookie("user_verified"))));
+      } catch (e) {
+        setUserAuthenticated(false);
+      }
+
+      // Get user info
       fetch("/api/auth/userinfo", { method: "GET" })
         .then((res) => res.json())
         .then((data) => {
