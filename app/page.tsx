@@ -54,7 +54,6 @@ export default function Home() {
 
     // Remove any non-numeric characters from the input value
     const numericValue = inputValue.replace(/[^0-9]/g, "");
-    console.log(inputValue, numericValue);
 
     // Format the numeric value to add commas every three digits from the right
     const formattedValue = numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ",");

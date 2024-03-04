@@ -137,7 +137,6 @@ export default function AuthDialog(props: AuthDialogProps) {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("this is data", data);
         if (data.success) {
           handleSnackbarOpen(true, data.message);
           resetTimer();
@@ -177,7 +176,6 @@ export default function AuthDialog(props: AuthDialogProps) {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log("this is data", data);
           if (data.success) {
             handleSnackbarOpen(true, data.message);
             handleNext();
