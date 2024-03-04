@@ -69,3 +69,25 @@ export async function POST(req: NextRequest) {
     message: `Verification code sent successfully`,
   });
 }
+
+// This function handles the PUT request from the client
+export async function PUT(req: NextRequest) {
+  // Get the verification code from the cookie
+  const code = cookies().get("verification_code")?.value;
+  // Parse the request body as JSON
+  const data = await req.json();
+
+  // Check if the verification code matches the one in the data
+  if (code !== data.verificationCode)
+    // If not, return a JSON response with a failure message
+    return NextResponse.json({
+      success: false,
+      message: "Invalid verification code. Please check and try again.",
+    });
+
+  // If the verification code is valid, set a cookie to indicate that the user is verified
+  cookies().set("user_verified", "true");
+
+  // Return a JSON response with a success message
+  return NextResponse.json({ success: true, message: "Verification code verified successfully." });
+}
