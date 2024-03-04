@@ -259,6 +259,7 @@ export default function AuthDialog(props: AuthDialogProps) {
                 onBlur={checkPhoneNumber}
                 helperText={phoneNumberInputErrorMessage}
                 FormHelperTextProps={{ classes: { root: styles.textFieldHelperText } }}
+                disabled={loading}
                 fullWidth
               />
             </div>
@@ -276,7 +277,7 @@ export default function AuthDialog(props: AuthDialogProps) {
               {/* Input for entering the verification code */}
               <MuiOtpInput
                 dir="ltr"
-                TextFieldsProps={{ classes: { root: styles.otpInput } }}
+                TextFieldsProps={{ classes: { root: styles.otpInput }, disabled: loading }}
                 length={6}
                 value={verificationCode}
                 onChange={handleVerificationCodeOnChange}
@@ -330,14 +331,23 @@ export default function AuthDialog(props: AuthDialogProps) {
           dir="ltr"
           className="pb-4 px-6"
           nextButton={
-            <Button onClick={dialogButtonAction} disabled={loading} className="rounded-xl">
+            <Button
+              onClick={dialogButtonAction}
+              disabled={loading || (activeStep === 1 && verificationCode.length !== 6)}
+              className="rounded-xl"
+            >
               {dialogButtonTitle()}
             </Button>
           }
           backButton={
             <Button
               onClick={handleBack}
-              disabled={activeStep === 0 || loading || activeStep === MAX_STEPS - 1}
+              disabled={
+                activeStep === 0 ||
+                loading ||
+                activeStep === MAX_STEPS - 1 ||
+                (activeStep === 1 && timer !== 0)
+              }
               className="rounded-xl"
             >
               قبلی
