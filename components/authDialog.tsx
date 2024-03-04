@@ -357,7 +357,12 @@ export default function AuthDialog(props: AuthDialogProps) {
       </Dialog>
 
       {/* Snackbar component to display success or error messages */}
-      <Snackbar open={snackbaropen} autoHideDuration={5000} onClose={handleCloseSnackbar}>
+      <Snackbar
+        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+        open={snackbaropen}
+        autoHideDuration={5000}
+        onClose={handleCloseSnackbar}
+      >
         <Alert
           className="rounded-xl"
           onClose={handleCloseSnackbar}
