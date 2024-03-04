@@ -53,20 +53,20 @@ export async function POST(req: NextRequest) {
   if (isPhoneNumberRegistered(data.phoneNumber))
     return NextResponse.json({
       success: false,
-      message: `Phone number already in use. Contact support if needed.`,
+      message: "شماره تلفن در حال حاضر در استفاده است. در صورت نیاز با پشتیبانی تماس بگیرید.",
     });
 
   if (isVerificationCodeActive())
     return NextResponse.json({
       success: false,
-      message: `Verification code not ready. Wait for expiration.`,
+      message: "کد تایید اماده نیست. منتظر انقضاء بمانید.",
     });
 
   // Set cookies and return a success message
   setVerificationCookies(data.phoneNumber, code);
   return NextResponse.json({
     success: true,
-    message: `Verification code sent successfully`,
+    message: "کد تایید با موفقیت ارسال شد.",
   });
 }
 
@@ -82,12 +82,12 @@ export async function PUT(req: NextRequest) {
     // If not, return a JSON response with a failure message
     return NextResponse.json({
       success: false,
-      message: "Invalid verification code. Please check and try again.",
+      message: "کد تایید نامعتبر است. لطفا بررسی کنید و دوباره امتحان کنید.",
     });
 
   // If the verification code is valid, set a cookie to indicate that the user is verified
   cookies().set("user_verified", "true");
 
   // Return a JSON response with a success message
-  return NextResponse.json({ success: true, message: "Verification code verified successfully." });
+  return NextResponse.json({ success: true, message: "احراز هویت با موفقیت انجام شد." });
 }
