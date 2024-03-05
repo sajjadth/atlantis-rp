@@ -15,7 +15,6 @@ import {
   DialogTitle,
   Icon,
   IconButton,
-  InputAdornment,
   LinearProgress,
   MobileStepper,
   Snackbar,
