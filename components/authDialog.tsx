@@ -359,11 +359,12 @@ export default function AuthDialog(props: AuthDialogProps) {
       <Snackbar
         anchorOrigin={{ horizontal: "right", vertical: "top" }}
         open={snackbaropen}
-        autoHideDuration={5000}
+        autoHideDuration={7500}
         onClose={handleCloseSnackbar}
       >
         <Alert
-          className="rounded-xl"
+          dir="rtl"
+          className={`rounded-xl ${styles.snackbarAlert}`}
           onClose={handleCloseSnackbar}
           severity={snackbar.success ? "success" : "error"}
           variant="filled"
