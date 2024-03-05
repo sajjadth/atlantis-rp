@@ -66,7 +66,12 @@ export async function POST(req: NextRequest) {
   setVerificationCookies(data.phoneNumber, code);
   return NextResponse.json({
     success: true,
-    message: "کد تایید با موفقیت ارسال شد.",
+
+    // In production, uncomment the line below:
+    // message: "کد تایید با موفقیت ارسال شد.",
+
+    // For demo, use the following line:
+    message: `به دلیل نداشتن سرویس پیامک کد: ${code}`,
   });
 }
 
