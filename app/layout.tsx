@@ -25,6 +25,18 @@ export const metadata: Metadata = {
     "بازی GTA V را با تجربه منحصر به فرد نقش‌آفرینی فارسی در Atlantis RP کشف کنید. در یک ادغام پرانرژی از فرهنگ فارسی و هرج و مرج لس سانتوس فرو غوغا شوید. به جامعه پرطراوتی بپیوندید که خلاقیت هیچ محدودیتی ندارد و به عنوان یک کارآفرین، نیروی انتظامی یا نماد شب‌زندگی سابقه خود را شکل دهید. داستان خود را در پرده پویای Atlantis RP باز کنید، جایی که دوستی‌ها شکل می‌گیرند، اتحادها آزمایش می‌شوند و افسانه‌های فارسی به واقعیت پیوسته می‌شوند. ماجراجویی شما در لس سانتوس منتظر است - شما از آن چه می‌سازید؟",
 };
 
+// Define navigation links
+const links = [
+  {
+    text: "صفحه اصلی",
+    path: "/",
+  },
+  {
+    text: "قوانین",
+    path: "/rules",
+  },
+];
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fa">
@@ -32,9 +44,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider theme={theme}>
           <AppRouterCacheProvider>
             <Box className="flex flex-col items-center justify-start main-background">
-              <Header />
+              <Header links={links} />
               <Suspense fallback={<Loading />}>{children}</Suspense>
-              <Footer />
+              <Footer links={links} />
             </Box>
           </AppRouterCacheProvider>
         </ThemeProvider>
