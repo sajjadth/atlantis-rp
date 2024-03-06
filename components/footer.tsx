@@ -3,9 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./footer.module.sass";
+import { FooterProps } from "@/constants/Footer.interface";
 import { Container, IconButton, Stack, Typography } from "@mui/material";
 
-export default function Footer() {
+export default function Footer(props: FooterProps) {
   // Get the current year for copyright display
   const currentYear = new Date().getFullYear();
 
@@ -43,12 +44,11 @@ export default function Footer() {
             دسترسی سریع
           </Typography>
           <ul className="list-none">
-            <li className="mb-2">
-              <Link href="/">صفحه اصلی</Link>
-            </li>
-            <li className="mb-2">
-              <Link href="/rules">قوانین سرور</Link>
-            </li>
+            {props.links.map((link) => (
+              <li className="mb-2">
+                <Link href={link.path}>{link.text}</Link>
+              </li>
+            ))}
           </ul>
         </div>
 
