@@ -45,7 +45,7 @@ export default function Footer(props: FooterProps) {
           </Typography>
           <ul className="list-none">
             {props.links.map((link) => (
-              <li className="mb-2">
+              <li key={link.text} className="mb-2">
                 <Link href={link.path}>{link.text}</Link>
               </li>
             ))}

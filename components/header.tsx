@@ -239,7 +239,11 @@ export default function Header(props: HeaderProps) {
       >
         {/* Navigation links */}
         {props.links.map((link) => (
-          <Link href={link.path} className={`${pathname === link.path ? styles.selected : ""}`}>
+          <Link
+            key={link.text}
+            href={link.path}
+            className={`${pathname === link.path ? styles.selected : ""}`}
+          >
             {link.text}
           </Link>
         ))}
