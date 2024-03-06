@@ -3,7 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./header.module.sass";
+import { deleteCookie } from "cookies-next";
 import { usePathname } from "next/navigation";
+import { HeaderProps } from "@/constants/Header.interface";
 import React, { useEffect, useRef, useState } from "react";
 import {
   Container,
@@ -27,9 +29,8 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
-import { deleteCookie } from "cookies-next";
 
-export default function Header() {
+export default function Header(props: HeaderProps) {
   // Get the current pathname using usePathname hook
   const pathname = usePathname();
 
@@ -114,18 +115,6 @@ export default function Header() {
       }
     });
   });
-
-  // Define navigation links
-  const links = [
-    {
-      text: "صفحه اصلی",
-      path: "/",
-    },
-    {
-      text: "قوانین",
-      path: "/rules",
-    },
-  ];
 
   return (
     <Container
@@ -246,16 +235,14 @@ export default function Header() {
 
       {/* Toggle buttons for page navigation */}
       <div
-        className={`h-fit md:flex hidden flex-row align-center justify-between min-w-44 ${styles.toggleMenu}`}
+        className={`h-fit md:flex hidden flex-row align-center justify-between min-w-44 dir-rtl ${styles.toggleMenu}`}
       >
         {/* Navigation links */}
-        <Link href="/rules" className={`${pathname === "/rules" ? styles.selected : ""}`}>
-          قوانین
-        </Link>
-
-        <Link href="/" className={`${pathname === "/" ? styles.selected : ""}`}>
-          صفحه اصلی
-        </Link>
+        {props.links.map((link) => (
+          <Link href={link.path} className={`${pathname === link.path ? styles.selected : ""}`}>
+            {link.text}
+          </Link>
+        ))}
       </div>
 
       {/* Drawer for mobile menu */}
@@ -284,7 +271,7 @@ export default function Header() {
         <Divider />
         {/* List of navigation links in the drawer */}
         <List>
-          {links.map((link) => (
+          {props.links.map((link) => (
             <ListItem key={link.text} disablePadding>
               <ListItemButton onClick={handleDrawerClose}>
                 <Link href={link.path} target="_self">
